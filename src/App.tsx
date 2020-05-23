@@ -1,8 +1,12 @@
 import * as React from 'react';
+import Map from './Components/MapComponent/Map';
 
 function App() {
     return (
-        <h1>Hello world, hello</h1>
+        <div>
+            <h1>Hello world, hello</h1>
+            <Map />
+        </div>
     );
 }
 
