@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Map, TileLayer, Marker} from 'react-leaflet';
+import {Map, TileLayer, CircleMarker, Popup} from 'react-leaflet';
 import {LatLngTuple} from 'leaflet';
 import './WorldMap.css';
 import {getCountryStats, IStatData} from '../../Api';
@@ -38,9 +38,13 @@ function WorldMap() {
             {countryStats && countryStats.map(country => {
                 const latLng: LatLngTuple = [country.latLng.latitude, country.latLng.longitude]
                 return (
-                    <Marker position = {latLng} key = {countryStats.indexOf(country)}>
+                    <CircleMarker center = {latLng} radius ={15} key = {countryStats.indexOf(country)}>
+                        <Popup>
+                            <h1>{country.countryName}</h1>
 
-                    </Marker>)
+                        </Popup>
+                    </CircleMarker>
+                )
             })}
         </Map>
     );
