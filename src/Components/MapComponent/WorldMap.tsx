@@ -1,27 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {Map, TileLayer, CircleMarker, Popup} from 'react-leaflet';
-import {LatLngTuple} from 'leaflet';
+import React from 'react';
+import {Map, TileLayer, CircleMarker} from 'react-leaflet';
+import {LatLngTuple, LatLngBoundsLiteral} from 'leaflet';
 import './WorldMap.css';
-import {getWorldWideStats, WorldwideStats} from '../../Api';
+import {WorldwideStats, IStatData} from '../../Api';
+import CountryPopup from './Popup/Popup';
+import useSwr from 'swr';
 
 function WorldMap() {
+    const {data} = useSwr<WorldwideStats>('api/globalStats', (endpoint: string) => {
+        return fetch(`https://us-central1-covid-tracker-api-c2a95.cloudfunctions.net/${endpoint}`)
+                    .then(response => response.json());
+    })
+
     const defaultCenter: LatLngTuple = [9.1021, 18.2812];
     const defaultZoom: number = 4.0;
-    
-    const [globalStats, setGlobalStats] = useState<WorldwideStats>();
-
-    useEffect(() => {
-        (async() => {
-            const stats = await getWorldWideStats();
-            if(stats) 
-                setGlobalStats(stats);
-            else 
-                console.error(`Failed to fetch country Stats`);
-        })();
-    }, []);
+    const bounds = data ? calculateBounds(data?.countries) : undefined;
 
     return (
-        <Map id = "worldmap" center = {defaultCenter} zoom = {defaultZoom}>
+        <Map id = "worldmap" center = {defaultCenter} zoom = {defaultZoom} maxBounds = {bounds}>
             <TileLayer 
             attribution= {
                 `Map data &copy; 
@@ -35,29 +31,55 @@ function WorldMap() {
             maxZoom = {6.5}
             minZoom = {3.0}
             />
-            {globalStats && globalStats.countries.map(country => {
-                const latLng: LatLngTuple = [country.latLng.latitude, country.latLng.longitude]
-                let baseRadius = 15;
-                let averageGlobalCases = globalStats.worldwide.confirmed / globalStats.countries.length;
-                return (
-                    <CircleMarker 
-                    key = {globalStats.countries.indexOf(country)}
-                    center = {latLng} 
-                    radius ={baseRadius + Math.log(country.confirmed / averageGlobalCases)} 
-                    fillOpacity = {.1}
-                    weight = {2}
-                    fillColor = "#EE2934"
-                    color = "#EE2934"
-                    opacity = {.8}
-                    >
-                        <Popup>
-                            <h1>{country.countryName}</h1>
-                        </Popup>
-                    </CircleMarker>
-                )
-            })}
+            {data && data.countries.map(
+                country => {
+                    const latLng: LatLngTuple = [country.latLng.latitude, country.latLng.longitude]
+                    let averageGlobalCases = data.worldwide.confirmed / data.countries.length;
+                    let baseRadius = country.confirmed > averageGlobalCases ? 20 : 15;
+                    return (
+                        <CircleMarker 
+                        key = {data.countries.indexOf(country)}
+                        center = {latLng} 
+                        radius ={baseRadius + Math.log(country.confirmed / averageGlobalCases)} 
+                        fillOpacity = {.1}
+                        weight = {2}
+                        fillColor = "#EE2934"
+                        color = "#EE2934"
+                        opacity = {.8}
+                        >
+                            <CountryPopup 
+                            name = {country.countryName}
+                            code = {country.countryCode}
+                            confirmed = {country.confirmed}
+                            active = {country.active}
+                            critical = {country.critical}
+                            recovered = {country.recovered}
+                            deaths = {country.deaths}
+                            />
+                        </CircleMarker>
+                    )
+            }
+            )}
         </Map>
     );
+}
+
+function calculateBounds(countries: IStatData[]) {
+    const horizontalPadding = 20;
+    const verticalPadding = 10;
+    let latitudes: number[] = [];
+    let longitudes: number[] = [];
+
+    countries.forEach(country => {
+        latitudes.push(country.latLng.latitude);
+        longitudes.push(country.latLng.longitude);
+    })
+
+    const bounds: LatLngBoundsLiteral = [
+        [Math.min(...latitudes) - verticalPadding, Math.min(...longitudes) - horizontalPadding],
+        [Math.max(...latitudes) + verticalPadding, Math.max(...longitudes) + horizontalPadding]
+    ]
+    return bounds;
 }
 
 export default WorldMap;
