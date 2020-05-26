@@ -1,4 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
 .countryFlag {
-    width: 25px;
-    height: 25px;
+    min-width: 30px;
+    min-height: 25px;
+    margin-right: 10px;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background-color: #707480;
+}
+
+.leaflet-popup-content {
+    min-width: max-content;
+    color: white;
+    line-height: 1.75;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+}
+
+.leaflet-popup-content h2 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    font-size: 21px;
+}
+
+li {
+    list-style: none;
+    font-weight: 400;
+}
+
+li>span {
+    float: right;
+    margin-left: 2rem;
+    font-weight: 600;
+}
+.unknown {
+    font-style: italic;
 }
