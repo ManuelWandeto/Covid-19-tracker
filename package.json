@@ -13,6 +13,7 @@
     "@types/react-leaflet": "^2.5.1",
     "leaflet": "^1.6.0",
     "react": "^16.13.1",
+    "react-country-flag": "^2.1.0",
     "react-dom": "^16.13.1",
     "react-leaflet": "^2.7.0",
     "react-scripts": "3.4.1",
