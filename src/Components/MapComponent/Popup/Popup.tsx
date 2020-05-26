@@ -1,5 +1,7 @@
 import React from 'react';
 import { Popup } from 'react-leaflet';
+import ReactCountryFlag from 'react-country-flag';
+import './Popup.css';
 
 interface IPopupProps {
     name: string,
@@ -12,15 +14,20 @@ interface IPopupProps {
     
 }
 
+
 const CountryPopup :React.FC<IPopupProps> = (props) => {
     return (
         <Popup>
-            <h1>{props.name}</h1>
-            <p>confirmed: {props.confirmed}</p>
-            <p>active: {props.active}</p>
-            <p>recovered: {props.recovered}</p>
-            <p>critical: {props.critical}</p>
-            <p>deaths: {props.deaths}</p>
+            <div className = "popup-content">
+                <h2>
+                    <ReactCountryFlag 
+                    svg = {true}
+                    className = "countryFlag" 
+                    countryCode = { props.code } 
+                    aria-label = {props.name}/>
+                    {props.name}
+                </h2>
+            </div>
         </Popup>
     )
 }
