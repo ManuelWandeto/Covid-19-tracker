@@ -10,7 +10,7 @@ function WorldMap() {
     const {data} = useSwr<WorldwideStats>('api/globalStats', (endpoint: string) => {
         return fetch(`https://us-central1-covid-tracker-api-c2a95.cloudfunctions.net/${endpoint}`)
                     .then(response => response.json());
-    })
+    }, {dedupingInterval: 60000})
 
     const defaultCenter: LatLngTuple = [9.1021, 18.2812];
     const defaultZoom: number = 4.0;
