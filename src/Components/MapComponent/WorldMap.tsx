@@ -1,23 +1,21 @@
 import React from 'react';
-import {Map, TileLayer, CircleMarker} from 'react-leaflet';
+import {Map, TileLayer, CircleMarker, AttributionControl} from 'react-leaflet';
 import {LatLngTuple, LatLngBoundsLiteral} from 'leaflet';
 import './WorldMap.css';
 import {WorldwideStats, IStatData} from '../../Api';
 import CountryPopup from './Popup/Popup';
-import useSwr from 'swr';
 
-function WorldMap() {
-    const {data} = useSwr<WorldwideStats>('api/globalStats', (endpoint: string) => {
-        return fetch(`https://us-central1-covid-tracker-api-c2a95.cloudfunctions.net/${endpoint}`)
-                    .then(response => response.json());
-    }, {dedupingInterval: 60000})
+
+
+function WorldMap(data: WorldwideStats) {
+    const {countries, worldwide} = data;
 
     const defaultCenter: LatLngTuple = [9.1021, 18.2812];
     const defaultZoom: number = 4.0;
     const bounds = data ? calculateBounds(data?.countries) : undefined;
 
     return (
-        <Map id = "worldmap" center = {defaultCenter} zoom = {defaultZoom} maxBounds = {bounds}>
+        <Map id = "worldmap" center = {defaultCenter} zoom = {defaultZoom} maxBounds = {bounds} attributionControl = {false}>
             <TileLayer 
             attribution= {
                 `Map data &copy; 
@@ -31,14 +29,15 @@ function WorldMap() {
             maxZoom = {6.5}
             minZoom = {3.0}
             />
-            {data && data.countries.map(
+            <AttributionControl position = {'bottomleft'} />
+            {countries.map(
                 country => {
                     const latLng: LatLngTuple = [country.latLng.latitude, country.latLng.longitude]
-                    let averageGlobalCases = data.worldwide.confirmed / data.countries.length;
+                    let averageGlobalCases = worldwide.confirmed / countries.length;
                     let baseRadius = country.confirmed > averageGlobalCases ? 20 : 15;
                     return (
                         <CircleMarker 
-                        key = {data.countries.indexOf(country)}
+                        key = {countries.indexOf(country)}
                         center = {latLng} 
                         radius ={baseRadius + Math.log(country.confirmed / averageGlobalCases)} 
                         fillOpacity = {.1}
