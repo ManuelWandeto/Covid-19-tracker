@@ -2,21 +2,11 @@ import React from 'react';
 import { Popup } from 'react-leaflet';
 import ReactCountryFlag from 'react-country-flag';
 import './Popup.css';
-
-interface IPopupProps {
-    name: string,
-    code: string,
-    confirmed: number,
-    active: number,
-    recovered: number,
-    critical: number,
-    deaths: number
-    
-}
+import {StateData} from '../../../shared/interfaces';
 
 
-const CountryPopup :React.FC<IPopupProps> = (props) => {
-    const {name, code, active, confirmed, critical, deaths, recovered} = props;
+const CountryPopup :React.FC<StateData> = (props) => {
+    const {name, countryCode, active, tests, confirmed, critical, deaths, recovered} = props;
 
     return (
         <Popup>
@@ -25,10 +15,11 @@ const CountryPopup :React.FC<IPopupProps> = (props) => {
                     <ReactCountryFlag 
                     svg = {true}
                     className = "countryFlag" 
-                    countryCode = { code } 
+                    countryCode = { countryCode } 
                     aria-label = {name}/>
                     {name}
                 </h2>
+                <li>Tests:<span>{formatter(tests)}</span></li>
                 <li>Confirmed:<span>{formatter(confirmed)}</span></li>
                 <li>Active:<span>{formatter(active)}</span></li>
                 <li>Recovered:<span>{formatter(recovered)}</span></li>
