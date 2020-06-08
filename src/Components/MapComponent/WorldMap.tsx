@@ -1,21 +1,32 @@
-import React from 'react';
-import {Map, TileLayer, CircleMarker, AttributionControl} from 'react-leaflet';
+import React, {useState} from 'react';
+import {Map, TileLayer, AttributionControl} from 'react-leaflet';
 import {LatLngTuple, LatLngBoundsLiteral} from 'leaflet';
 import './WorldMap.css';
-import {WorldwideStats, IStatData} from '../../Api';
-import CountryPopup from './Popup/Popup';
+import {GlobalStats, StateData} from '../../shared/interfaces';
+import CountryMarker from './CountryMarker';
 
 
-
-function WorldMap(data: WorldwideStats) {
-    const {countries, worldwide} = data;
-
+function WorldMap(data: GlobalStats) {
+    const {countries} = data;
     const defaultCenter: LatLngTuple = [9.1021, 18.2812];
-    const defaultZoom: number = 4.0;
+    const defaultZoom: number = 3.0;
     const bounds = data ? calculateBounds(data?.countries) : undefined;
-
+    const [zoomLevel, setZoomLevel] = useState<number>(defaultZoom);
+    const highestTotalCase = calculateHighestCase(data.countries);
+    
     return (
-        <Map id = "worldmap" center = {defaultCenter} zoom = {defaultZoom} maxBounds = {bounds} attributionControl = {false}>
+        <Map 
+        id = "worldmap" 
+        center = {defaultCenter}
+        zoom = {defaultZoom}
+        maxBounds = {bounds} 
+        attributionControl = {false}
+        onViewportChange = {newViewport => {
+            if(newViewport.zoom) {
+                setZoomLevel(newViewport.zoom);
+            }
+        }}
+        >
             <TileLayer 
             attribution= {
                 `Map data &copy; 
@@ -31,39 +42,13 @@ function WorldMap(data: WorldwideStats) {
             />
             <AttributionControl position = {'bottomleft'} />
             {countries.map(
-                country => {
-                    const latLng: LatLngTuple = [country.latLng.latitude, country.latLng.longitude]
-                    let averageGlobalCases = worldwide.confirmed / countries.length;
-                    let baseRadius = country.confirmed > averageGlobalCases ? 20 : 15;
-                    return (
-                        <CircleMarker 
-                        key = {countries.indexOf(country)}
-                        center = {latLng} 
-                        radius ={baseRadius + Math.log(country.confirmed / averageGlobalCases)} 
-                        fillOpacity = {.1}
-                        weight = {2}
-                        fillColor = "#EE2934"
-                        color = "#EE2934"
-                        opacity = {.8}
-                        >
-                            <CountryPopup 
-                            name = {country.countryName}
-                            code = {country.countryCode}
-                            confirmed = {country.confirmed}
-                            active = {country.active}
-                            critical = {country.critical}
-                            recovered = {country.recovered}
-                            deaths = {country.deaths}
-                            />
-                        </CircleMarker>
-                    )
-            }
+                country => <CountryMarker country = {country} currentZoom = {zoomLevel} highestTotalCases = {highestTotalCase}/>
             )}
         </Map>
     );
 }
 
-function calculateBounds(countries: IStatData[]) {
+function calculateBounds(countries: StateData[]) {
     const horizontalPadding = 20;
     const verticalPadding = 10;
     let latitudes: number[] = [];
@@ -79,6 +64,12 @@ function calculateBounds(countries: IStatData[]) {
         [Math.max(...latitudes) + verticalPadding, Math.max(...longitudes) + horizontalPadding]
     ]
     return bounds;
+}
+
+function calculateHighestCase(countries: StateData[]) {
+    const casePerCountry: number[] = [];
+    countries.forEach(country => casePerCountry.push(country.confirmed));
+    return Math.max(...casePerCountry);
 }
 
 export default WorldMap;
