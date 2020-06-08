@@ -42,7 +42,7 @@ function WorldMap(data: GlobalStats) {
             />
             <AttributionControl position = {'bottomleft'} />
             {countries.map(
-                country => <CountryMarker country = {country} currentZoom = {zoomLevel} highestTotalCases = {highestTotalCase}/>
+                country => <CountryMarker country = {country} currentZoom = {zoomLevel} highestTotalCase = {highestTotalCase}/>
             )}
         </Map>
     );
