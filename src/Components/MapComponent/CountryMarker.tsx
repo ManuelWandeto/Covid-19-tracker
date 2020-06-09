@@ -7,7 +7,7 @@ import {scaleSqrt} from 'd3-scale';
 
 //TODO: Find a better way to implement state/country flags
 
-function CountryMarker (props: {currentZoom: number, highestTotalCase: number, country: StateData}) {
+function CountryMarker (props: {currentZoom: number, minMaxCaseTotal: [number, number], country: StateData}) {
     const markerStyles = {
         fillOpacity: .1,
         weight: 2,
@@ -15,7 +15,7 @@ function CountryMarker (props: {currentZoom: number, highestTotalCase: number, c
         color: '#EE2934',
         opacity: .8
     }
-    const {country, currentZoom, highestTotalCase} = props;
+    const {country, currentZoom, minMaxCaseTotal} = props;
     if(country.states && currentZoom > 3.8) {
         return <>
             {country.states.map(state => {
@@ -23,7 +23,7 @@ function CountryMarker (props: {currentZoom: number, highestTotalCase: number, c
                 return <CircleMarker 
                 key = {state.name}
                 center = {latLng}
-                radius = {calculateMarkerRadius(state.confirmed, highestTotalCase)}
+                radius = {calculateMarkerRadius(state.confirmed, minMaxCaseTotal)}
                 {...markerStyles}
                 >
                     <CountryPopup 
@@ -38,7 +38,7 @@ function CountryMarker (props: {currentZoom: number, highestTotalCase: number, c
             <CircleMarker 
                 key = {country.name}
                 center = {latLng}
-                radius = {calculateMarkerRadius(country.confirmed, highestTotalCase)}
+                radius = {calculateMarkerRadius(country.confirmed, minMaxCaseTotal)}
                 {...markerStyles}
                 >
                     <CountryPopup 
@@ -49,9 +49,9 @@ function CountryMarker (props: {currentZoom: number, highestTotalCase: number, c
     }
 }
 
-function calculateMarkerRadius(confirmed: number, highestTotalCase: number): number {
+function calculateMarkerRadius(confirmed: number, minMaxCase: [number, number]): number {
     const interpolate =  scaleSqrt()
-                        .domain([1, highestTotalCase])
+                        .domain([minMaxCase[0], minMaxCase[1]])
                         .range([10, 50]);
 
     return interpolate(confirmed);

@@ -12,7 +12,7 @@ function WorldMap(data: GlobalStats) {
     const defaultZoom: number = 3.0;
     const bounds = data ? calculateBounds(data?.countries) : undefined;
     const [zoomLevel, setZoomLevel] = useState<number>(defaultZoom);
-    const highestTotalCase = calculateHighestCase(data.countries);
+    const minMaxCases = calculateMinMaxCase(data.countries);
     
     return (
         <Map 
@@ -42,7 +42,7 @@ function WorldMap(data: GlobalStats) {
             />
             <AttributionControl position = {'bottomleft'} />
             {countries.map(
-                country => <CountryMarker country = {country} currentZoom = {zoomLevel} highestTotalCase = {highestTotalCase}/>
+                country => <CountryMarker country = {country} currentZoom = {zoomLevel} minMaxCaseTotal = {minMaxCases}/>
             )}
         </Map>
     );
@@ -66,10 +66,10 @@ function calculateBounds(countries: StateData[]) {
     return bounds;
 }
 
-function calculateHighestCase(countries: StateData[]) {
+function calculateMinMaxCase(countries: StateData[]): [number, number] {
     const casePerCountry: number[] = [];
     countries.forEach(country => casePerCountry.push(country.confirmed));
-    return Math.max(...casePerCountry);
+    return [Math.min(...casePerCountry), Math.max(...casePerCountry)];
 }
 
 export default WorldMap;
