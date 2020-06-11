@@ -3,6 +3,7 @@ import WorldMap from './Components/MapComponent/WorldMap';
 import useSwr from 'swr';
 import {GlobalStats} from './shared/interfaces';
 import LoadingScreen from './Components/LoadingScreen/LoadingScreen';
+import SideBar from './Components/SideBar/Sidebar';
 
 export enum Status { success, loading, error };
 
@@ -15,7 +16,7 @@ function App() {
                     .then(response => response.json());
     }, { 
         revalidateOnFocus: false, 
-        dedupingInterval: 60000,
+        dedupingInterval: 30000,
         onError: () => {
             setStatus(Status.error);
         },
@@ -30,7 +31,12 @@ function App() {
     })
 
     if(isDoneLoading && data) {
-        return <WorldMap countries = {data.countries} worldwide = {data.worldwide} updatedAt = {data.updatedAt}/> 
+        return (
+            <>
+            <SideBar />
+            <WorldMap countries = {data.countries} worldwide = {data.worldwide} updatedAt = {data.updatedAt}/>
+            </>
+        )
     } else {
         return <LoadingScreen status = {status}/>
     }
