@@ -12,6 +12,7 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/react-leaflet": "^2.5.1",
+    "@types/react-select": "^3.0.13",
     "d3-scale": "^3.2.1",
     "leaflet": "^1.6.0",
     "react": "^16.13.1",
@@ -20,6 +21,7 @@
     "react-leaflet": "^2.7.0",
     "react-lottie-wrapper": "^1.1.8",
     "react-scripts": "3.4.1",
+    "react-select": "^3.1.0",
     "swr": "^0.2.2",
     "typescript": "^3.7.5"
   },
