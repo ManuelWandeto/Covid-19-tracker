@@ -1,0 +1,26 @@
+h3, p {
+    margin: 0 0 0 5px;
+}
+h3 {
+    font-weight: 400;
+    font-family: 'Open Sans';
+    font-size: 1rem;
+}
+p {
+    padding: 5px 0;
+    font-weight: 600;
+    font-family: 'Raleway';
+    font-size: 1.125rem;
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border-radius: 10px;
+    height: auto;
+    min-width: 100px;
+    color: white;
+    padding: 10px 0 10px 5px;
+}
