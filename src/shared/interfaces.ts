@@ -20,7 +20,7 @@ export interface StateData {
 export interface GlobalStats {
     updatedAt: Date,
     worldwide: {
-        tests?: number,
+        tests: number,
         confirmed: number,
         active: number,
         recovered: number,
