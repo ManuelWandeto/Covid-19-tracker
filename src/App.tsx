@@ -33,7 +33,6 @@ function App() {
     if(isDoneLoading && data) {
         return (
             <>
-            <SideBar />
             <WorldMap countries = {data.countries} worldwide = {data.worldwide} updatedAt = {data.updatedAt}/>
             </>
         )
