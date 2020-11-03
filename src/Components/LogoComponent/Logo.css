@@ -1,9 +1,17 @@
 #logo {
     display: inline-block;
     position: absolute;
-    top: 40px;
-    left: 40px;
-    z-index: 9999;
-    max-width: 130px;
+    top: 24px;
+    left: 24px;
+    z-index: 99999;
+    max-width: 120px;
     max-height: 32px;
+}
+
+@media(min-width: 600px) {
+    #logo {
+        top: 40px;
+        left: 40px;
+        max-width: 130px;
+    }
 }
