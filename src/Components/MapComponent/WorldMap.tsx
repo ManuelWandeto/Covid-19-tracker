@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Map, TileLayer, AttributionControl} from 'react-leaflet';
+import {Map, TileLayer, AttributionControl, ZoomControl} from 'react-leaflet';
 import {LatLngTuple, LatLngBoundsLiteral} from 'leaflet';
 import './WorldMap.css';
 import {GlobalStats, StateData} from '../../shared/interfaces';
@@ -21,6 +21,7 @@ function WorldMap(data: GlobalStats) {
         zoom = {defaultZoom}
         maxBounds = {bounds} 
         attributionControl = {false}
+        zoomControl = {false}
         onViewportChange = {newViewport => {
             if(newViewport.zoom) {
                 setZoomLevel(newViewport.zoom);
@@ -41,6 +42,7 @@ function WorldMap(data: GlobalStats) {
             minZoom = {3.0}
             />
             <AttributionControl position = {'bottomleft'} />
+            <ZoomControl position = {'bottomright'} />
             {countries.map(
                 country => <CountryMarker 
                             key = {country.countryCode} 
