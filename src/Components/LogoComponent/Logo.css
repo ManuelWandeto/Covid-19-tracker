@@ -1,0 +1,9 @@
+#logo {
+    display: inline-block;
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    z-index: 9999;
+    max-width: 130px;
+    max-height: 32px;
+}
