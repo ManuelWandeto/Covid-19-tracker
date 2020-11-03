@@ -3,8 +3,7 @@ import WorldMap from './Components/MapComponent/WorldMap';
 import useSwr from 'swr';
 import {GlobalStats} from './shared/interfaces';
 import LoadingScreen from './Components/LoadingScreen/LoadingScreen';
-import SideBar from './Components/SideBar/Sidebar';
-
+import LogoComponent from './Components/LogoComponent/LogoComponent';
 export enum Status { success, loading, error };
 
 function App() {
@@ -33,6 +32,7 @@ function App() {
     if(isDoneLoading && data) {
         return (
             <>
+            <LogoComponent />
             <WorldMap countries = {data.countries} worldwide = {data.worldwide} updatedAt = {data.updatedAt}/>
             </>
         )
