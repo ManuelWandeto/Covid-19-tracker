@@ -2,3 +2,11 @@
     width: 100vw;
     height: 100vh;
 }
+@media(max-width: 600px) {
+    .leaflet-bottom .leaflet-control {
+        margin-bottom: 72px;
+    }
+    .leaflet-container .leaflet-control-attribution {
+        display: none;
+    }
+}
